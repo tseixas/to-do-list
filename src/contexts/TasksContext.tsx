@@ -58,7 +58,6 @@ export const TasksContextProvider = ({
   };
 
   const updateTask = (id: string, body: any) => {
-    console.log(id, body);
     updateDoc(doc(database, "tasks", id), body)
   };
 
