@@ -17,7 +17,7 @@ export function Clipboard({ tasks }: ClipboardProps) {
           justify-between
         "
       >
-        <div className="flex gap-2 items-center">
+        {/* <div className="flex gap-2 items-center">
           <strong className="
             text-blue-600
           ">Tarefas criadas</strong>
@@ -28,7 +28,7 @@ export function Clipboard({ tasks }: ClipboardProps) {
             px-2
             py-0.5
           ">{tasks.length}</span>
-        </div>
+        </div> */}
         {/* <div className="flex gap-2 items-center">
           <strong
             className="text-violet-600"
