@@ -1,87 +1,80 @@
-import { ChangeEvent, FormEvent, ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
-import { TaskEntity } from "../interfaces/TaskEntity";
+import {
+  ChangeEvent,
+  FormEvent,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { TaskEntity, TaskFieldEntity } from "../interfaces/TaskEntity";
+import firebase from "firebase/compat/app";
+import { app, database, auth } from "./firebase";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 
 interface TasksContextProps {
-  tasks: TaskEntity[]
-  createNewTask: (newTask: TaskEntity) => void
-  updateTask: (id: string) => void
-  deleteTask: (id: string) => void
-  
-} 
-
-interface TasksContextProviderProps {
-  children: ReactNode
+  tasks: TaskEntity[];
+  getTasks();
+  createNewTask: (newTask: TaskFieldEntity) => void;
+  updateTask: (id: string, body: any) => void;
+  deleteTask: (id: string) => void;
 }
 
-export const TasksContext = createContext({} as TasksContextProps)
+interface TasksContextProviderProps {
+  children: ReactNode;
+}
 
-export const TasksContextProvider = ({children}: TasksContextProviderProps) => {
-  const [tasks, setTasks] = useState<TaskEntity[]>([])
-  
+export const TasksContext = createContext({} as TasksContextProps);
 
-  const createNewTask = (newTask: TaskEntity) => {
-    setTasks((state) => {
-      const tasks = [newTask, ...state]
-      updateLocalStorage(tasks);
-      return tasks
+export const TasksContextProvider = ({
+  children,
+}: TasksContextProviderProps) => {
+  const [tasks, setTasks] = useState<TaskEntity[]>([]);
+
+  const dbCollection = collection(database, "tasks");
+
+  const createNewTask = (newTask: TaskFieldEntity) => {
+    addDoc(dbCollection, {
+      description: newTask.description,
+      checked: newTask.checked,
     });
-  }
+  };
 
-  const updateTask = (id: string) => {
-    const completedTask = tasks.filter((task) => task.id === id);
-    if(completedTask.length === 0) return alert('Tarefa não encontrada')
-    
-    completedTask[0].checked = !completedTask[0].checked;
-    const filteredTasks = tasks.filter((task) => task.id !== id);
-
-    if (completedTask[0].checked) { // vai ficar por último
-      const tasks = [...filteredTasks, ...completedTask]
-      setTasks(tasks)
-      updateLocalStorage(tasks);
-    } else {
-      const tasks = [...completedTask, ...filteredTasks]
-      setTasks(tasks)
-      updateLocalStorage(tasks);
-    }
-  }
+  const updateTask = (id: string, body: any) => {
+    console.log(id, body);
+    updateDoc(doc(database, "tasks", id), body)
+  };
 
   const deleteTask = (id: string) => {
-    const filteredTasks = tasks.filter((task) => task.id !== id)
-    setTasks(filteredTasks);
-    updateLocalStorage(filteredTasks);
+    deleteDoc(doc(database, "tasks", id))
+  };
+
+  const getTasks = () => {
+    return query(dbCollection);
   }
-
-  const updateLocalStorage = (tasks: TaskEntity[]) => {
-    localStorage.setItem('@todo-list-task', JSON.stringify(tasks));
-  }
-
-  const getTasks = useCallback(
-    () => {
-      const tasks = localStorage.getItem('@todo-list-task');
-      if (tasks) {
-        setTasks(JSON.parse(tasks));
-      }
-    },
-    []
-  )
-  
-
-  useEffect(() => {
-    getTasks()
-  }, [getTasks])
 
   return (
     <TasksContext.Provider
-    value={{
-      tasks,
-      createNewTask,
-      deleteTask,
-      updateTask
-    }}
+      value={{
+        tasks,
+        getTasks,
+        createNewTask,
+        deleteTask,
+        updateTask,
+      }}
     >
       {children}
     </TasksContext.Provider>
-  )
-}
+  );
+};
 
-export const useTasksContext = () => useContext(TasksContext)
+export const useTasksContext = () => useContext(TasksContext);
