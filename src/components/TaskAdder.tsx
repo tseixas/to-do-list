@@ -55,7 +55,6 @@ export function TaskAdder() {
 
     onSnapshot(query, (querySnapshot: any) => {
       querySnapshot.forEach((doc: any) => {
-        console.log(doc.id);
         response.push({ id: doc.id, data: doc.data() });
         setTasks(response);
       });
