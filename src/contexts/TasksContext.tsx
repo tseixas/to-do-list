@@ -19,7 +19,7 @@ import {
 
 interface TasksContextProps {
   tasks: TaskEntity[];
-  getTasks();
+  getTasks:  () => void;
   createNewTask: (newTask: TaskFieldEntity) => void;
   updateTask: (id: string, body: any) => void;
   deleteTask: (id: string) => void;
