@@ -49,7 +49,7 @@ export function TaskAdder() {
   };
 
   const handleGetTasks = () => {
-    const query = getTasks();
+    const query: any = getTasks();
 
     const response: any[] = [];
 
