@@ -1,14 +1,13 @@
 "use client"
 
-import { useTasksContext } from "@/contexts/TasksContext";
 import { Task } from "./Task";
+import { TaskEntity } from "@/interfaces/TaskEntity";
 
-export function Clipboard() {
+interface ClipboardProps {
+  tasks: TaskEntity;
+}
 
-  const { tasks } = useTasksContext()
-
-  const completedTasks = tasks.filter(task => task.checked)
-
+export function Clipboard({ tasks }: ClipboardProps) {
   return (
     <div>
       <header
@@ -30,7 +29,7 @@ export function Clipboard() {
             py-0.5
           ">{tasks.length}</span>
         </div>
-        <div className="flex gap-2 items-center">
+        {/* <div className="flex gap-2 items-center">
           <strong
             className="text-violet-600"
           >Tarefas concluídas</strong>
@@ -41,7 +40,7 @@ export function Clipboard() {
             px-2
             py-0.5
           ">{completedTasks.length} de {tasks.length}</span>
-        </div>
+        </div> */}
       </header>
       <div className="transition-transform mb-12">
       <label className="group
@@ -56,15 +55,6 @@ export function Clipboard() {
         border-zinc-700
         focus-within:border-violet-600
       ">
-        <input
-          placeholder='Pesquisar'
-          className='
-            p-4
-            w-full
-            bg-transparent
-            outline-none
-          '
-        />
       </label>
         {
           tasks.map((task) => (

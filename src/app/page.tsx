@@ -1,4 +1,3 @@
-import { Clipboard } from '@/components/Clipboard'
 import Header from '@/components/Header'
 import { TaskAdder } from '@/components/TaskAdder'
 
@@ -18,7 +17,6 @@ export default function Home() {
       justify-center
       '>
         <TaskAdder />
-        <Clipboard />
       </div>
 
     </div>
